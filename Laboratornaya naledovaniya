@@ -1,0 +1,164 @@
+#include <iostream>
+
+using namespace std;
+class Harbinger
+{
+private:
+    std::string h_name;
+    int h_age;
+    std::string CatchPhrase;
+
+public:
+    Harbinger(std::string name = "", int age = 0, std::string catchPhrase = "") // конструктор со значениями по умолчанию
+        : h_name(name), h_age(age), CatchPhrase(catchPhrase)
+    {}
+
+
+    // геттеры
+    std::string getName() const { return h_name; }
+    int getAge() const { return h_age; }
+    std::string getCatchPhrase() const {return CatchPhrase;}
+
+
+    //сеттеры
+    void setName(std::string name){
+        h_name = name;
+    }
+
+    void setAge(int age){
+        h_age = age;
+    }
+
+    void setCatchPhrase(std::string catchPhrase){
+        CatchPhrase = catchPhrase;
+    }
+
+
+};
+
+// Публичное наследование от класса Harbinger
+class Prophet : public Harbinger
+{
+private:
+    std::string ph_name;
+    int ph_age;
+    std::string ph_call;
+    std::string MagnumOpus[3]; // Статический массив строка не превышает 25 обрезаем саму строку если больше.
+
+
+
+public:
+    Prophet(std::string name = "", int age = 0, std::string phCall = "")
+        : ph_name(name), ph_age(age), ph_call(phCall)
+    {}
+
+
+    std::string getName() const { return ph_name; }
+    int getAge() const { return ph_age; }
+    std::string getPhCall() const {return ph_call;}
+    std::string getMagnumOpus(int i) const {return MagnumOpus[i];}
+
+
+    void setName(std::string name){
+        ph_name = name;
+    }
+
+    void setAge(int age){
+        ph_age = age;
+    }
+
+    void setMagnumOpus(int indexNum, std::string inputString){
+        std::string substring = inputString.substr(0, 25); // обрезает строку, если она больше 25
+        MagnumOpus[indexNum]=substring;
+
+        // код ниже выбирает самую длинную строку и подставляет на место ph_call
+        // если строки равны по длине выбирается последняя
+        for(int i = 0; i< 3; i++){
+            if(MagnumOpus[i].size()>ph_call.size()){
+                ph_call = MagnumOpus[i];
+            }
+        }
+    }
+};
+
+
+class DeusEx : public Prophet{
+private:
+    std::string gd_name;
+    int gd_year;
+
+public:
+    DeusEx(std::string name = "", int year = 1234)
+        : gd_name(name), gd_year(year){}
+
+    void showText(Harbinger harbinger, Prophet prophet){
+        cout << harbinger.getName() << " в возрасте " << harbinger.getAge();
+        cout << " говорил, что " << harbinger.getCatchPhrase() << endl;
+        cout << "Первое пророчество: " << prophet.getMagnumOpus(1) << endl;
+        cout << "Второе пророчество: " << prophet.getMagnumOpus(2) << endl;
+        cout << "Главное пророчество: " << prophet.getPhCall() << endl;
+        cout << "Так говорил " << prophet.getName() << " в возрасте " << prophet.getAge() << endl;
+        cout << "В год " << gd_year << " Пришел " << gd_name << ", которого предрекали ";
+        cout << harbinger.getName() << " и " << prophet.getName() << endl;
+
+
+    }
+
+};
+
+
+class Believer : private DeusEx{
+private:
+    std::string bv_name;
+    int bv_age;
+
+public:
+
+    Believer(std::string name = "", int age = 0)
+        : bv_name(name), bv_age(age) {}
+    std::string getName() const { return bv_name; }
+    int getAge() const { return bv_age; }
+
+    void setName(std::string name){
+        bv_name = name;
+    }
+
+    void setAge(int age){
+        bv_age = age;
+    }
+
+    void showText(DeusEx deusEx, Prophet prophet){
+        cout << "Верующий " << bv_name <<  " молится " << deusEx.getName() << " именем ";
+        cout << prophet.getName() << ". " << "С " <<  deusEx.getAge() << " и по сей день." << endl;
+    }
+};
+
+
+
+int main()
+{
+    Harbinger harbinger("Verona", 20, "I'm an artist");
+    Prophet prophet("Maksim", 33);
+    DeusEx deusEx("Anastasiy");
+    Believer believer("Viktor");
+    prophet.setMagnumOpus(0, "Еverything will be good.");
+    prophet.setMagnumOpus(1, "We can do it");
+    prophet.setMagnumOpus(2, "We can");
+    deusEx.showText(harbinger, prophet);
+    believer.showText(deusEx, prophet);
+
+//    harbinger.setName("Ivan");
+//    harbinger.setCatchPhrase("ph");
+
+//    Prophet prophet;
+//    prophet.setMagnumOpus(0, "hi");
+//    prophet.setMagnumOpus(1, "ALIS");
+//    cout << prophet.getMagnumOpus(0);
+//    cout << prophet.getPhCall();
+
+//    cout << harbinger.getCatchPhrase();
+//    cout << prophet.getMagnumOpus(0);
+
+
+    return 0;
+}
